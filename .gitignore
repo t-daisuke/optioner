@@ -1,0 +1,5 @@
+# Anchored: a bare "bin/" would also swallow npm/optioner/bin/optioner.js,
+# which is the shim itself and must be committed.
+/bin/
+npm/optioner-darwin-arm64/bin/
+npm/**/*.tgz

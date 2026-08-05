@@ -1,0 +1,13 @@
+{
+  "name": "@doskoi64/optioner",
+  "version": "0.1.0",
+  "description": "Consistent decision pages for AI agent sessions. Ask a human, get a paste-ready answer.",
+  "bin": { "optioner": "bin/optioner.js" },
+  "files": ["bin"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/t-daisuke/optioner" },
+  "publishConfig": { "access": "public" },
+  "optionalDependencies": {
+    "@doskoi64/optioner-darwin-arm64": "0.1.0"
+  }
+}

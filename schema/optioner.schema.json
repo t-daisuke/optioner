@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/t-daisuke/optioner/blob/main/schema/optioner.schema.json",
+  "title": "Optioner spec",
+  "description": "A decision page: questions an AI agent asks a human. Text fields (context, prompt, description) accept Markdown.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["optioner", "title", "questions"],
+  "properties": {
+    "optioner": {
+      "const": 1,
+      "$comment": "Must be the integer 1. JSON Schema cannot tell 1 from 1.0, so 1.0 passes here while the Optioner validator rejects it; write it without a fraction or exponent."
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "context": {
+      "type": ["string", "null"],
+      "$comment": "Optional fields accept null as a synonym for \"omitted\", because generators that always emit every field cannot tell the two apart."
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/question" }
+    }
+  },
+  "$defs": {
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "prompt"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "$comment": "Ids must also be unique within a spec. JSON Schema cannot express that across array items, so the Optioner validator is stricter than this schema on that one rule."
+        },
+        "type": { "enum": ["free_text", "yes_no", "single_choice", "multi_choice"] },
+        "prompt": { "type": "string", "minLength": 1 },
+        "options": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/option" }
+        },
+        "allow_other": { "type": ["boolean", "null"] }
+      },
+      "allOf": [
+        {
+          "$comment": "A choice needs at least two real options, so the lower bound lives here rather than on the options keyword itself. \"type\": \"array\" is required as well: options is nullable in general, but a null here would slip past minItems and leave the choice empty.",
+          "if": { "properties": { "type": { "enum": ["single_choice", "multi_choice"] } } },
+          "then": {
+            "required": ["id", "type", "prompt", "options"],
+            "properties": { "options": { "type": "array", "minItems": 2 } }
+          }
+        },
+        {
+          "$comment": "free_text and yes_no have no options to choose from. Values that carry no meaning are tolerated (an empty array, false, null, since a null options also passes maxItems); any real value is an error.",
+          "if": { "properties": { "type": { "enum": ["free_text", "yes_no"] } } },
+          "then": {
+            "properties": {
+              "options": { "maxItems": 0 },
+              "allow_other": { "enum": [false, null] }
+            }
+          }
+        }
+      ]
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": ["string", "null"] },
+        "links": {
+          "type": ["array", "null"],
+          "items": { "type": "string", "format": "uri" },
+          "$comment": "Third known divergence from the Optioner validator, after the 1.0 version literal and id uniqueness: a null *inside* the array (\"links\": [null]) is rejected here but accepted by the validator, which decodes it to an empty string and renders an empty link. Safe direction — this schema is the stricter side, so anything it accepts also loads; writing the schema loosely enough to match would mean promising that [null] renders, which it does not."
+        },
+        "recommended": { "type": ["boolean", "null"] }
+      }
+    }
+  }
+}

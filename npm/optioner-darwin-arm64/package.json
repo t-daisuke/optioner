@@ -1,0 +1,11 @@
+{
+  "name": "@doskoi64/optioner-darwin-arm64",
+  "version": "0.1.0",
+  "description": "Optioner binary for macOS arm64.",
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "files": ["bin/optioner"],
+  "preferUnplugged": true,
+  "publishConfig": { "access": "public", "executableFiles": ["bin/optioner"] },
+  "license": "MIT"
+}

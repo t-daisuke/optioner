@@ -1,0 +1,29 @@
+{
+  "optioner": 1,
+  "title": "リリース前の最終判断",
+  "context": "## 状況\nv1 のスコープと出し方を決めます。\n\n| 項目 | 状態 |\n|---|---|\n| テスト | green |\n| ドキュメント | 未 |",
+  "questions": [
+    {
+      "id": "scope",
+      "type": "single_choice",
+      "prompt": "リリーススコープはどうしますか?",
+      "options": [
+        {"label": "コア機能のみ", "description": "**最小で出す。**フィードバックを早く得る", "recommended": true},
+        {"label": "ドキュメント込み", "description": "READMEとスキル同梱まで待つ"}
+      ],
+      "allow_other": true
+    },
+    {
+      "id": "channels",
+      "type": "multi_choice",
+      "prompt": "どこで告知しますか?",
+      "options": [
+        {"label": "X", "links": ["https://x.com"]},
+        {"label": "Zenn"},
+        {"label": "登壇"}
+      ]
+    },
+    { "id": "ship_this_week", "type": "yes_no", "prompt": "今週中に出しますか?" },
+    { "id": "notes", "type": "free_text", "prompt": "その他、気になっていることは?" }
+  ]
+}

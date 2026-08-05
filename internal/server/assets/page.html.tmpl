@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} — Optioner</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main>
+  <h1>{{.Title}}</h1>
+  {{if .ContextHTML}}<section class="context">{{.ContextHTML}}</section>{{end}}
+
+  <form id="answer-form">
+    {{range .Questions}}
+    <fieldset data-question="{{.ID}}" data-type="{{.Type}}">
+      <legend>{{.PromptHTML}}</legend>
+
+      {{if eq .Type "free_text"}}
+        <textarea name="{{.ID}}" rows="4"></textarea>
+
+      {{else if eq .Type "yes_no"}}
+        <label><input type="radio" name="{{.ID}}" value="yes"> Yes</label>
+        <label><input type="radio" name="{{.ID}}" value="no"> No</label>
+
+      {{else}}
+        {{$q := .}}
+        {{range .Options}}
+        <div class="option">
+          <label>
+            {{if eq $q.Type "single_choice"}}
+            <input type="radio" name="{{$q.ID}}" value="{{.Label}}">
+            {{else}}
+            <input type="checkbox" name="{{$q.ID}}" value="{{.Label}}">
+            {{end}}
+            <span class="label">{{.Label}}</span>
+            {{if .Recommended}}<span class="badge">Recommended</span>{{end}}
+          </label>
+          {{if .DescriptionHTML}}<div class="description">{{.DescriptionHTML}}</div>{{end}}
+          {{range .Links}}<a href="{{.}}" target="_blank" rel="noreferrer">{{.}}</a>{{end}}
+        </div>
+        {{end}}
+        {{if .AllowOther}}
+        <label class="other">Other: <input type="text" name="{{.ID}}__other" data-role="other"></label>
+        {{end}}
+      {{end}}
+    </fieldset>
+    {{end}}
+    <button type="submit" id="submit-button">Submit answers</button>
+    <p id="submit-error" class="error" role="alert" hidden></p>
+  </form>
+
+  <section id="result" hidden>
+    <h2>Copy this back to your agent</h2>
+    <pre id="clipboard-preview"></pre>
+    <button id="copy-button">Copy to clipboard</button>
+    <button id="done-button">Done — close &amp; shut down</button>
+    <p id="result-error" class="error" role="alert" hidden></p>
+  </section>
+</main>
+<script src="/assets/app.js"></script>
+</body>
+</html>

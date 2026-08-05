@@ -1,0 +1,25 @@
+{
+  "optioner": 1,
+  "title": "Choose a database",
+  "context": "## Background\nWe need to persist user data for the new feature.",
+  "questions": [
+    {
+      "id": "db",
+      "type": "single_choice",
+      "prompt": "Which DB should we use?",
+      "options": [
+        {
+          "label": "SQLite",
+          "description": "**Zero config.** Single file, easy backup.",
+          "links": ["https://www.sqlite.org/"],
+          "recommended": true
+        },
+        {
+          "label": "Postgres",
+          "description": "Production grade, needs a server process."
+        }
+      ],
+      "allow_other": true
+    }
+  ]
+}
